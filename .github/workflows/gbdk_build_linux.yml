@@ -49,5 +49,5 @@ jobs:
       - name: Build GBDK-2020 examples
         shell: bash
         run: |
-          cd build/gbdk/examples
+          cd gbdk-2020/build/gbdk/examples
           make

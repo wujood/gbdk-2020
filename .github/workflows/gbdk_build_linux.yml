@@ -45,8 +45,9 @@ jobs:
           export SDCCDIR=`pwd`/sdcc
           cd gbdk-2020
           make
-          # Now build the examples for all platforms
-          cd build
-          cd gbdk
-          cd examples
+      
+      - name: Build GBDK-2020 examples
+        shell: bash
+        run: |
+          cd build/gbdk/examples
           make

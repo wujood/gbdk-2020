@@ -1,0 +1,49 @@
+name: GBDK Build Examples
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # Triggers the workflow on push or pull request events but only for the develop branch
+  # push:
+  #   branches: [ develop ]
+  # pull_request:
+  #   branches: [ develop ]
+
+jobs:
+  build:
+    runs-on: macos-10.15
+    steps:
+
+      # ==== OS Specific Dependencies ====
+      - name: Depends
+        run: |
+          # Note: patched sms/gg z80 build not available for macOS
+          curl -Lo sdcc.tar.bz2 https://github.com/gbdk-2020/gbdk-2020-sdcc/releases/download/sdcc-12539-official/sdcc-snapshot-x86_64-apple-macosx-20210718-12548.tar.bz2
+          # Use patched sms/gg z80 build:
+          curl -Lo sdcc.tar.bz2 https://github.com/gbdk-2020/gbdk-2020-sdcc/releases/download/sdcc-12539-patched/sdcc-x86_64-apple-macosx-20210718-12548--sms-gg-patched.tar.bz2
+          bunzip2 sdcc.tar.bz2
+          tar xvf sdcc.tar
+
+      # ==== Build Steps ====
+      - name: Check out GBDK-2020
+        uses: actions/checkout@v2
+        with:
+          path: gbdk-2020
+          submodules: false
+
+      # ==== Pre-Build: Set environment vars ====
+      - name: Pre-Build
+        shell: bash
+        run: |
+          echo "BUILD_PACKAGE_FILENAME=gbdk-2020-MacOS-x64.tar.gz" >> $GITHUB_ENV
+
+      # ==== Builds ====
+      - name: Build GBDK-2020
+        shell: bash
+        run: |
+          export SDCCDIR=`pwd`/sdcc
+          cd gbdk-2020
+          make
+          # Now build the examples for all platforms
+          cd build/gbdk/examples
+          make

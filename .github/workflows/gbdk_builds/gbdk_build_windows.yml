@@ -1,0 +1,58 @@
+name: Build Windows
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  # Triggers the workflow on push or pull request events but only for the develop branch
+  # push:
+  #   branches: [ develop ]
+  # pull_request:
+  #   branches: [ develop ]
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+
+      - name: Depends
+        run: |
+          # curl -Lo sdcc.zip https://github.com/gbdk-2020/gbdk-2020-sdcc/releases/download/sdcc-12539-official/sdcc-snapshot-x86_64-w64-mingw32-20210711-12539.zip
+          # Use patched sms/gg z80 build:
+          curl -Lo sdcc.zip https://github.com/gbdk-2020/gbdk-2020-sdcc/releases/download/sdcc-12539-patched/sdcc-x86_64-w64-mingw32-20210711-12539--sms-gg-patched.zip
+          7z x sdcc.zip
+
+      - name: Depends MSYS2/MinGW64
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          path-type: minimal #strict
+          release: false
+          update: false
+          install: >-
+            base-devel
+            mingw-w64-x86_64-toolchain
+
+      # ==== Build Steps ====
+      - name: Check out GBDK-2020
+        uses: actions/checkout@v2
+        with:
+          path: gbdk-2020
+          submodules: false
+
+      # ==== Pre-Build: Set environment vars ====
+
+      - name: Pre-Build
+        shell: bash
+        run: |
+          echo "BUILD_PACKAGE_FILENAME=gbdk-2020-Windows-x64.zip" >> $GITHUB_ENV
+
+      - name: Build
+        shell: cmd
+        run: |
+          set SDCCDIR=%CD%\sdcc
+          cd gbdk-2020
+          msys2 -c 'make'
+          # Now build the examples for all platforms
+          cd build/gbdk/examples
+          msys2 -c 'make'
+

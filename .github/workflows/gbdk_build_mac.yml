@@ -1,4 +1,4 @@
-name: GBDK Build Examples
+name: Build macOS
 
 on:
   # Allows you to run this workflow manually from the Actions tab

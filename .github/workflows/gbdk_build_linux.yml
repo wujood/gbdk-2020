@@ -50,7 +50,3 @@ jobs:
           cd gbdk
           cd examples
           make
-          cd ..
-          cd ..
-          cd ..
-          cd ..

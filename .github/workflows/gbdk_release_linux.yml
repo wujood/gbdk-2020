@@ -26,7 +26,7 @@ jobs:
           path: gbdk-2020
           submodules: false
           
-      - name: Set environment vars
+      - name: Set environment variables
         shell: bash
         run: |
           echo "BUILD_PACKAGE_FILENAME=gbdk-2020-Linux-x64.tar.gz" >> $GITHUB_ENV
@@ -44,8 +44,7 @@ jobs:
         run: |
           cd gbdk-2020
           mkdir package
-          cd build
-          tar czf ../package/${{ env.BUILD_PACKAGE_FILENAME }} gbdk
+          tar czf package/${{ env.BUILD_PACKAGE_FILENAME }} build/gbdk
 
       # ==== Upload binary ====
       - name: Upload

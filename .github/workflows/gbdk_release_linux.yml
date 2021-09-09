@@ -50,3 +50,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }} 
           asset_path: gbdk-2020/package/${{ env.BUILD_PACKAGE_FILENAME }}
           asset_name: Linux-x64
+          asset_content_type: application/tar+gzip

@@ -9,8 +9,9 @@ jobs:
     name: Upload Linux Binary
     runs-on: ubuntu-20.04
     steps:
+
       # ==== OS Specific Dependencies ====
-      - name: Depends
+      - name: Install dependencies
         run: |
           # curl -Lo sdcc.tar.bz2 https://github.com/gbdk-2020/gbdk-2020-sdcc/releases/download/sdcc-12539-official/sdcc-snapshot-amd64-unknown-linux2.5-20210711-12539.tar.bz2
           # Use patched sms/gg z80 build:
@@ -18,31 +19,36 @@ jobs:
           bunzip2 sdcc.tar.bz2
           tar xvf sdcc.tar
 
-      # ==== Build Steps ====
-      - name: Check out GBDK-2020
+      # ==== Pre-Build ====
+      - name: Check out
         uses: actions/checkout@v2
         with:
           path: gbdk-2020
           submodules: false
-
-      # ==== Pre-Build: Set environment vars ====
-      # Needs to be in a separate step than build so that setting the environment var takes effect
-      #
-      - name: Pre-Build
+          
+      - name: Set environment vars
         shell: bash
         run: |
           echo "BUILD_PACKAGE_FILENAME=gbdk-2020-Linux-x64.tar.gz" >> $GITHUB_ENV
 
-      # ==== Builds ====
-      - name: Build GBDK-2020
+      # ==== Build ====
+      - name: Build
         shell: bash
         run: |
           export SDCCDIR=`pwd`/sdcc
           cd gbdk-2020
           make
-      
+
+      - name: Package
+        shell: bash
+        run: |
+          cd gbdk-2020
+          mkdir package
+          cd build
+          tar czf ../package/${{ env.BUILD_PACKAGE_FILENAME }} gbdk
+
       # ==== Upload binary ====
-      - name: Upload Release Asset
+      - name: Upload
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

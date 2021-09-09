@@ -1,5 +1,9 @@
 # GBDK-2020
-[GBDK](http://gbdk.sourceforge.net/) A C compiler, assembler, linker and set of libraries for the Z80 like Nintendo Gameboy.
+[GBDK](http://gbdk.sourceforge.net/) A C compiler, assembler, linker and set of libraries.
+
+__Supported Consoles:__
+- Nintendo Gameboy
+- Sega Master System & Game Gear
 
 ## Releases
 
